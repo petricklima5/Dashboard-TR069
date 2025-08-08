@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard TR069</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Dashboard Screen -->
+    <div id="dashboardScreen">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <h1>Dashboard TR069</h1>
+                </div>
+                <div class="header-actions">
+                    <button id="uploadBtn" class="btn btn-success">
+                        <i class="fas fa-upload"></i>
+                        Upload CSV
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Filtros -->
+        <section class="filters-section">
+            <div class="filters-container">
+                <h2><i class="fas fa-filter"></i> Filtros</h2>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="colaboradorFilter">Colaborador</label>
+                        <select id="colaboradorFilter">
+                            <option value="">Todos os colaboradores</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="categoriaFilter">Categoria</label>
+                        <select id="categoriaFilter">
+                            <option value="">Todas as categorias</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="tipoFilter">Tipo</label>
+                        <select id="tipoFilter">
+                            <option value="">Todos os tipos</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button id="applyFilters" class="apply-btn">
+                            <i class="fas fa-search"></i>
+                            Aplicar Filtros
+                        </button>
+                        <button id="clearFilters" class="clear-btn">
+                            <i class="fas fa-times"></i>
+                            Limpar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resumo -->
+        <section class="summary-section">
+            <div class="summary-container">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3 id="totalRegistros">0</h3>
+                        <p>Total de Registros</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3 id="totalValor">0</h3>
+                        <p>Valor Total</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3 id="totalColaboradores">0</h3>
+                        <p>Colaboradores</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3 id="totalCategorias">0</h3>
+                        <p>Categorias</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gráficos -->
+        <section class="charts-section">
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-pie"></i> Distribuição por Categoria</h3>
+                    <canvas id="categoriaChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-bar"></i> Valores por Colaborador</h3>
+                    <canvas id="colaboradorChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabela de Dados -->
+        <section class="data-section">
+            <div class="data-container">
+                <h2><i class="fas fa-table"></i> Dados Detalhados</h2>
+                <div class="table-wrapper">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Categoria</th>
+                                <th>Colaborador</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal de Upload -->
+    <div id="uploadModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-upload"></i> Upload de Arquivo CSV</h3>
+                <button id="closeModal" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Arraste o arquivo CSV aqui ou clique para selecionar</p>
+                    <input type="file" id="csvFile" accept=".csv" style="display: none;">
+                </div>
+                <div id="uploadProgress" class="upload-progress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p>Processando arquivo...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="uploadFileBtn" class="upload-file-btn" disabled>
+                    <i class="fas fa-upload"></i>
+                    Fazer Upload
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
