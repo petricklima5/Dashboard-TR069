@@ -12,7 +12,7 @@ from src.models.data import DashboardData
 
 def load_initial_data():
     """Carrega os dados iniciais do CSV fornecido"""
-    csv_path = '/home/ubuntu/upload/DADOSTR069-Dados.csv'
+    csv_path = os.path.join(os.path.dirname(__file__), 'data', 'DADOSTR069-Dados.csv')
     
     with app.app_context():
         # Cria todas as tabelas
