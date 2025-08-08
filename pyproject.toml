@@ -3,7 +3,6 @@ name = "tr069-gb"
 version = "0.1.0"
 description = "Projeto TR069 - GB"
 authors = ["Petrick Silva <seu@email.com>"]
-readme = "README.md"
 packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
